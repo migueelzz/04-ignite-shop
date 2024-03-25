@@ -4,13 +4,16 @@ import Head from "next/head"
 
 import { useKeenSlider } from 'keen-slider/react'
 
-import { HomeContainer, Product } from "../styles/pages/home"
+import { HomeContainer, Product, ProductFooter } from "../styles/pages/home"
 
 import 'keen-slider/keen-slider.min.css'
 import { stripe } from "../lib/stripe"
 import { GetStaticProps } from "next"
 import Stripe from "stripe"
 import Link from "next/link"
+import { ShoppingBag } from "lucide-react"
+import { useContext } from "react"
+import { CartContext } from "../contexts/cart-context"
 
 interface HomeProps {
   products: {
@@ -23,34 +26,51 @@ interface HomeProps {
 
 
 export default function Home({ products }: HomeProps) {
+  const { addItem } = useContext(CartContext)
+
   const [sliderRef] = useKeenSlider({
     slides: {
-      perView: 3,
+      perView: 2,
       spacing: 48,
-    }
+    },
   })
+
+  async function handleAddItemToCart(product: any) {
+    addItem({ 
+      ...product, 
+      quantity: 1 
+    })
+  }
 
   return (
     <>
       <Head>
         <title>Home | Ignite Shop</title>
-      </Head>
+      </Head> 
       
       <HomeContainer ref={sliderRef} className="keen-slider">
         {products.map(product => {
           return (
-            <Link href={`/product/${product.id}`} key={product.id} prefetch={false}>
-              <Product
-              className="keen-slider__slide"
-            >
-            <Image src={product.imageUrl} alt="" width={520} height={480} />
-    
-            <footer>
-              <strong>{product.name}</strong>
-              <span>{product.price}</span>
-            </footer>
-          </Product>
-            </Link>
+            <>
+              <Link href={`/product/${product.id}`} key={product.id} prefetch={false}>
+                <Product
+                  className="keen-slider__slide"
+                >
+                  <Image src={product.imageUrl} alt="" width={520} height={480} />
+          
+                  <ProductFooter>
+                    <div>
+                      <strong>{product.name}</strong>
+                      <span>{product.price}</span>
+                    </div>
+
+                    <button onClick={() => handleAddItemToCart(product)}>
+                      <ShoppingBag />
+                    </button>
+                  </ProductFooter>
+                </Product>
+              </Link>
+            </>
           )
         })}
       </HomeContainer>
@@ -74,6 +94,8 @@ export const getStaticProps: GetStaticProps = async () => {
         style: 'currency',
         currency: 'BRL',
       }).format(price.unit_amount / 100),
+      description: product.description,
+      defaultPriceId: price.id,
     }
   })
 

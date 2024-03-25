@@ -2,15 +2,22 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { stripe } from "../../lib/stripe";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { priceId } = req.body
+    const { cartItems } = req.body
+
+    console.log(cartItems)
 
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Method not allowed." })
     }
 
-    if (!priceId) {
-        return res.status(400).json({ error: 'Price not found.' })
+    if (!cartItems || cartItems.length === 0) {
+        return res.status(400).json({ error: 'No items in the cart.' })
     }
+
+    const lineItems = cartItems.map(item => ({
+        price: item.defaultPriceId,
+        quantity: item.quantity || 1,
+    }));
 
     const success_url = `${process.env.NEXT_URL}/success?session_id={CHECKOUT_SESSION_ID}`
     const cancel_url = `${process.env.NEXT_URL}/`
@@ -19,12 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         success_url: success_url,
         cancel_url: cancel_url,
         mode: 'payment',
-        line_items: [
-            {
-                price: priceId,
-                quantity: 1,
-            }
-        ]
+        line_items: lineItems,
     })
 
     return res.status(201).json({

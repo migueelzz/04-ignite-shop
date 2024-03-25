@@ -24,30 +24,43 @@ export const Product = styled('div', {
         objectFit: 'cover',
     },
 
-    footer: {
-        position: 'absolute',
-        bottom: '0.25rem',
-        left: '0.25rem',
-        right: '0.25rem',
-        padding: '2rem',
+    '&:hover': {
+        footer: {
+            transform: 'translateY(0%)',
+            opacity: 1,
+        }
+    }
+})
 
-        borderRadius: 6,
+export const ProductFooter = styled('footer', {
+    position: 'absolute',
+    bottom: '0.25rem',
+    left: '0.25rem',
+    right: '0.25rem',
+    padding: '2rem',
 
+    borderRadius: 6,
+
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent:'space-between',
+
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+
+    transform: 'translateY(110%)',
+    opacity: 0,
+    transition: 'all 0.2s ease-in-out',
+
+    div: {
         display: 'flex',
-        alignItems: 'center',
-        justifyContent:'space-between',
-
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-
-        transform: 'translateY(110%)',
-        opacity: 0,
-        transition: 'all 0.2s ease-in-out',
+        flexDirection: 'column',
+        gap: '0.5rem',
 
         strong: {
             fontSize: '$lg',
             color: '$gray100'
         },
-
+    
         span: {
             fontSize: '$xl',
             fontWeight: 'bold',
@@ -55,10 +68,27 @@ export const Product = styled('div', {
         }
     },
 
-    '&:hover': {
-        footer: {
-            transform: 'translateY(0%)',
-            opacity: 1,
+    button: {
+        width: 56,
+        height: 56,
+
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 12,
+
+        cursor: 'pointer',
+
+        backgroundColor: '$green500',
+        color: '$white',
+
+        border: 0,
+        borderRadius: 8,
+        transition: 'opacity 0.2s ease-out',
+
+        '&:hover': {
+            opacity: '0.7',
         }
     }
+
 })

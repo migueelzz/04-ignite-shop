@@ -1,43 +1,28 @@
 import Stripe from "stripe"
 import { stripe } from "../../lib/stripe"
-import { ImageContainer, ProductContainer, ProductDetails } from "../../styles/pages/product"
+import { ImageContainer, ProductButton, ProductContainer, ProductDetails } from "../../styles/pages/product"
 import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image"
-import { useRouter } from "next/router"
-import axios from "axios"
-import { useState } from "react"
+import { useContext } from "react"
 import Head from "next/head"
+import { CartContext } from "../../contexts/cart-context"
 
 interface ProductProps {
     product: {
         id: string
         name: string
         imageUrl: string
-        price: number
+        price: string
         description: string
         defaultPriceId: string
     }
 }
 
 export default function Product({ product }: ProductProps) {
-    const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
+    const { addItem } = useContext(CartContext)
 
-    async function handleBuyProduct() {
-        try {
-            setIsCreatingCheckoutSession(true)
-            const response = await axios.post('/api/checkout', {
-                priceId: product.defaultPriceId
-            })
-
-            const { checkoutUrl } = response.data
-
-            window.location.href = checkoutUrl
-        } catch (err) {
-            // Conectar com uma ferramenta de observabilidade (Datadog / Sentry)
-            
-            setIsCreatingCheckoutSession(false)
-            alert('Falha ao redirecionar ao checkout!')
-        }
+    async function handleAddItemToCart() {
+        addItem({ ...product, quantity: 1 })
     }
 
     return (
@@ -61,9 +46,9 @@ export default function Product({ product }: ProductProps) {
 
                     <p>{product.description}</p>
                 
-                    <button disabled={isCreatingCheckoutSession} onClick={handleBuyProduct}>
-                        Comprar agora
-                    </button>
+                    <ProductButton onClick={handleAddItemToCart}>
+                        Colocar na sacola
+                    </ProductButton>
                 </ProductDetails>
             </ProductContainer>
         </>
