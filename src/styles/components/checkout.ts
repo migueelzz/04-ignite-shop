@@ -158,3 +158,41 @@ export const CheckoutButton = styled('button', {
         transition: 'background-color 0.3s',
     }
 })
+
+export const CheckoutEmpty = styled('div', {
+    textAlign: 'center',
+    color: '$gray600',
+    margin: '32px 0',
+
+    h2: {
+        fontSize: '$lg',
+        fontWeight: 'bold',
+        color: '$gray300',
+        margin: '4px',
+    },
+})
+
+export const CheckoutLink = styled('a', {
+    marginTop: 55,
+    backgroundColor: '$green500',
+    border: 0,
+    color: '$white',
+    borderRadius: 8,
+    padding: '1.25rem',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    fontSize: '$md',
+    textAlign: 'center',
+    textDecoration: 'none',
+
+    '&:disabled': {
+        opacity: 0.6,
+        cursor: 'not-allowed',
+    },
+    
+    '&:not(:disabled):hover': {
+        backgroundColor: '$green300',
+        transition: 'background-color 0.3s',
+    }
+})
+

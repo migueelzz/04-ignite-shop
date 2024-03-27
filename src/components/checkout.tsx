@@ -1,9 +1,10 @@
 import { X } from "lucide-react";
-import { CheckoutButton, CheckoutContainer, CheckoutDetails, CheckoutFooter, CheckoutProduct, CheckoutProductDetails, CheckoutProductImage, CheckoutSummary, CloseCheckout, RemoveItemButton } from "../styles/components/checkout";
+import { CheckoutButton, CheckoutContainer, CheckoutDetails, CheckoutEmpty, CheckoutFooter, CheckoutLink, CheckoutProduct, CheckoutProductDetails, CheckoutProductImage, CheckoutSummary, CloseCheckout, RemoveItemButton } from "../styles/components/checkout";
 import { useContext, useState } from "react";
 import { CartContext } from "../contexts/cart-context";
 import axios from "axios";
 import Image from "next/image";
+import Link from "next/link";
 
 interface CheckoutProps {
     openModal: boolean
@@ -46,9 +47,17 @@ export function Checkout({ openModal }: CheckoutProps) {
                 <CloseCheckout onClick={handleOpenModal}>
                     <X />
                 </CloseCheckout>
-                <h1>Sacola de compras</h1>
+                
 
-                {cart.map((product) => {
+                {cart.length === 0 ? (
+                    <CheckoutEmpty>
+                        <h2>Sua sacola está vazia!</h2>
+                        <span>Adicione produtos a sua sacola.</span>
+                    </CheckoutEmpty>
+                ) : (
+                    <>
+                        <h1>Sacola de compras</h1>
+                        {cart.map((product) => {
                     return (
                         <CheckoutProduct key={product.id}>
                             <CheckoutProductImage>
@@ -67,9 +76,15 @@ export function Checkout({ openModal }: CheckoutProps) {
                         </CheckoutProduct>
                     )
                 })}
+                    </>
+                )}
+
+
             </CheckoutDetails>
 
-            {/* footer */}
+            {cart.length === 0 ? (
+                <CheckoutLink href="/">Conferir produtos</CheckoutLink>
+            ) : (
             <CheckoutFooter>
                 <CheckoutSummary>
                     <div>
@@ -89,6 +104,7 @@ export function Checkout({ openModal }: CheckoutProps) {
 
                 <CheckoutButton onClick={handleCompleteCheckout}>Finalizar compra</CheckoutButton>
             </CheckoutFooter>
+            )}
         </CheckoutContainer>
     )
 }
